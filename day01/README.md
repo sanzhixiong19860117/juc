@@ -91,3 +91,126 @@ public class ThreeCreate {
     }
 }
 ```
+
+## 线程经常使用的方法
+
+1. sleep()	使用这个方法可以让当前的线程停止一段时间
+2. Yield()    把当前线程重新放入等待队列当中
+3. join().     停止别的进程，让调用这个方法的进程执行完以后在执行别的继承
+
+下面是实力使用
+
+利用线程打印一个倒序，一个正序的1-10的输出
+
+```java
+package com.joy;
+
+/**
+ * @author joy
+ * @date 2020/6/7
+ */
+public class SleepDemo implements Runnable {
+    @Override
+    public void run() {
+        for (int i = 0; i < 10; i++) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + "--" + i);
+        }
+    }
+
+    public static void main(String[] args) {
+        SleepDemo sleepDemo = new SleepDemo();
+        new Thread(sleepDemo).start();
+
+        for (int i = 10; i > 0; i--) {
+            try {
+                Thread.sleep(1002);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + "-" + i);
+        }
+    }
+}
+```
+
+下面是yield方法
+
+```java
+package com.joy;
+
+/**
+ * @author joy
+ * @date 2020/6/7
+ */
+public class YieldDemo implements Runnable {
+    @Override
+    public void run() {
+        for (int i = 0; i < 10; i++) {
+            if (i >= 4) {
+                Thread.yield();
+            }
+            System.out.println(Thread.currentThread().getName() + "==" + i);
+        }
+    }
+
+    public static void main(String[] args) {
+        YieldDemo yieldDemo = new YieldDemo();
+        new Thread(yieldDemo).start();
+        for (int i = 0; i < 10 ; i++) {
+            System.out.println(Thread.currentThread().getName() + "===" + i);
+        }
+    }
+}
+```
+
+join的使用
+
+```java
+package com.joy;
+
+/**
+ * @author joy
+ * @date 2020/6/7
+ */
+public class JoinDemo {
+
+    public static void main(String[] args) {
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("t1=" + i);
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            try {
+                t1.join();
+              //如果没有这句，它是一起抢张cpu的操作
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("t2=" + i);
+            }
+        });
+
+        t1.start();
+        t2.start();
+    }
+}
+```
