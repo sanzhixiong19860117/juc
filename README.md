@@ -1,6 +1,6 @@
 # juc高并发的大纲
 
-单机高并发应该掌握的线程基础：线程状态，异常与锁等
+[单机高并发应该掌握的线程基础：线程状态，异常与锁等](https://github.com/sanzhixiong19860117/juc/tree/master/day01)
 
 解析自旋锁CAS操作与volatile
 
