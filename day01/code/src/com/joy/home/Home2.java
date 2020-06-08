@@ -12,6 +12,11 @@ public class Home2 {
         this.deposit = deposit;
     }
 
+    public Home2(String name, double deposit) {
+        this.name = name;
+        this.deposit = deposit;
+    }
+
     public String getName() {
         return name;
     }
@@ -29,9 +34,9 @@ public class Home2 {
     }
 
     public static void main(String[] args) {
-        Home2 home2 = new Home2();
+        Home2 home2 = new Home2("张三", 100.0);
 
-        new Thread(()->home2.setValue("张三", 100.0));
+        new Thread(()->home2.setValue("张三", 99.0));
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
