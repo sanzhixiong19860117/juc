@@ -457,7 +457,7 @@ public class Home2 {
 }
 ```
 
-## 给run方法加上锁
+## 给run方法加上锁（不用重写run方法也可以进行运行？）
 
 ```java
 package com.joy.home;
@@ -486,3 +486,92 @@ public class RunnableRun implements Runnable {
 }
 ```
 
+## 重入锁（两个方法都申请同步锁）
+
+```java
+package com.joy.demo;
+
+/**
+ * @author joy
+ * @date 2020/6/8
+ */
+public class T1 implements Runnable {
+    @Override
+    public void run() {}
+
+    public synchronized void m1() {
+        System.out.println("m1 start");
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        m2();//进入m2同步方法里面
+        System.out.println("m1 end");
+    }
+
+    public synchronized void m2() {
+        System.out.println("m2 start");
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("m2 end");
+    }
+
+    public static void main(String[] args) {
+        new T1().m1();//执行m1方法
+    }
+}
+```
+
+同入锁的应用，继承操作。
+
+## 异常锁（这个是在同步锁里面出现了异常，它还会继续执行）
+
+```java
+package com.joy.demo;
+
+/**
+ * @author joy
+ * @date 2020/6/8
+ */
+public class T2 {
+    private int h = 0;
+
+    public synchronized void h() {
+        while (true) {
+            h++;
+            if (h == 5) {
+                int i = 1 / 0;
+                System.out.println(i);
+            }
+            System.out.println(h);
+        }
+    }
+
+    public static void main(String[] args) {
+        T2 t2 = new T2();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                t2.h();
+            }
+        };
+        new Thread(runnable).start();
+    }
+}
+```
+
+正常情况下异常就会释放锁的操作，但是那一瞬间也会产生错误，让数值变的完全不可行。
+
+## synchronized的底层实现
+
+1. 早期：使用的是os的锁进行处理
+2. 锁的升级，偏向锁->自旋锁（10次自旋）-超级锁（os的锁操作）
+
+## 
+
+1. 执行时间短，线程数少使用自旋锁
+2. 执行时间长，线程数多使用os锁
