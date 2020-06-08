@@ -457,7 +457,7 @@ public class Home2 {
 }
 ```
 
-## 给run方法加上锁（不用重写run方法也可以进行运行？）
+## 给run方法加上锁（只要是子类的方法和父类的方法名一样即重写）
 
 ```java
 package com.joy.home;
@@ -528,7 +528,7 @@ public class T1 implements Runnable {
 
 同入锁的应用，继承操作。
 
-## 异常锁（这个是在同步锁里面出现了异常，它还会继续执行）
+## 异常锁（这个是在同步锁里面出现了异常，它还会释放）
 
 ```java
 package com.joy.demo;
