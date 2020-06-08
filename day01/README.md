@@ -338,3 +338,64 @@ public class home1 implements Runnable{
 4. 阻塞阶段（等待wiat阻塞，同步阻塞，其他阻塞（sleep，join等））
 5. 死亡（异常退出，执行完成main方法，生命周期结束）
 
+## T.class是否是单里
+
+这个.class是单里
+
+## synchronized方法调用普通方法
+
+```java
+package com.joy;
+
+
+/**
+ * 使用锁的方法调用普通方法
+ */
+public class FuctionDemo implements Runnable {
+    @Override
+    public void run() {
+
+    }
+
+    //同步分发
+    public synchronized void m1(){
+        System.out.println(Thread.currentThread().getName()+"m1.start");
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(Thread.currentThread().getName()+"m1.end");
+    }
+
+    //非同步方法
+    public void m2(){
+        System.out.println(Thread.currentThread().getName()+"m2.start");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(Thread.currentThread().getName()+"m2.end");
+    }
+
+    public static void main(String[] args) {
+        FuctionDemo fuctionDemo = new FuctionDemo();
+
+        new Thread(fuctionDemo::m1,"t1").start();
+        new Thread(fuctionDemo::m2,"t2").start();
+    }
+}
+```
+
+得出结果
+
+```
+t2m2.start
+t1m1.start
+t2m2.end
+t1m1.end
+```
+
+证明同步和非同步可以同时调用。
+
