@@ -94,6 +94,66 @@ public class Test2 {
 }
 ```
 
+volatile它只能保证可见性，但是原子性不能保证。
 
+下面的demo
+
+```java
+package com.joy;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * volatile可见性的一个demo
+ */
+
+public class Test3 {
+    volatile int count = 0;
+
+    public void m() {
+        for (int i = 0; i < 10000; i++) {
+            count++;
+        }
+    }
+
+    public static void main(String[] args) {
+        List<Thread> list = new ArrayList<Thread>();
+        Test3 test3 = new Test3();
+        for (int i = 0; i < 10; i++) {
+            list.add(new Thread(test3::m, "t" + i));
+        }
+
+        //启动
+        list.forEach(o -> {
+            o.start();
+        });
+
+        for (int i = 0; i < 10; i++) {
+            //list的操作
+            list.forEach(o -> {
+                try {
+                    o.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        System.out.println("coout=" + test3.count);
+    }
+}
+```
+
+出现了数据显示不正确，因为它只有可见性，但是没有原子性，加入synchronized 对属性进行封装即可。
+
+```java
+public void m() {
+    for (int i = 0; i < 10000; i++) {
+        synchronized (this){
+            count++;
+        }
+    }
+}
+```
 
 ## cas
