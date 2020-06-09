@@ -2,7 +2,7 @@
 
 [单机高并发应该掌握的线程基础：线程状态，异常与锁等](https://github.com/sanzhixiong19860117/juc/tree/master/day01)
 
-解析自旋锁CAS操作与volatile
+[解析自旋锁CAS操作与volatile](https://github.com/sanzhixiong19860117/juc/tree/master/day02)
 
  JUC包下AtomicXXX类与新的同步机制：Latch Semaphore等
 
