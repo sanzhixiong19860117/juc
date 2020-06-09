@@ -57,4 +57,43 @@ volatile boolean isRuning = true; //是否在运行
 
 这个时候就能正常的停止当前的死循环操作。
 
+指令重排序：
+
+jvm的new 对象的过程
+
+1. 申请内存并且给一个初始数据
+2. 根据你设定的数据进行赋值
+3. 根据栈指向这个变量的地址
+
+会出现2和3的顺序不一样，所以需要增加。核心的代码双关代理模式。
+
+```java
+package com.joy;
+
+public class Test2 {
+    private volatile static Test2 _inter;
+
+    public static Test2 getInstance() {
+
+        if (_inter == null) {
+            synchronized (Test2.class) {
+                if (_inter == null) {
+                    _inter = new Test2();
+                }
+            }
+        }
+        return _inter;
+    }
+
+    //测试
+    public static void main(String[] args) {
+        for (int i = 0; i < 100; i++) {
+            System.out.println(Test2.getInstance().hashCode());
+        }
+    }
+}
+```
+
+
+
 ## cas
