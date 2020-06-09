@@ -35,7 +35,7 @@ public class Test4 {
             e.printStackTrace();
         }
 
-        test4.object = new Object();//创建了另一个object对象
+//        test4.object = new Object();//创建了另一个object对象
 
         new Thread(test4::m, "t2").start();
     }

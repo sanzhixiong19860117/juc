@@ -209,5 +209,86 @@ public class Test4 {
 final Object object = new Object();
 ```
 
-## cas
+## cas（无锁优化）
+
+AtomicInteger原理：cas（Compare And Set)
+
+基础使用
+
+```java
+package com.joy;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * ATomic基础应用
+ */
+public class Test5 {
+    //初始化原子数据
+    AtomicInteger atomicInteger = new AtomicInteger(0);
+
+    public void m() {
+        for (int i = 0; i < 10000; i++) {
+            atomicInteger.incrementAndGet();//atomicInteger++
+        }
+    }
+
+    public static void main(String[] args) {
+        Test5 test5 = new Test5();
+        List<Thread> list = new ArrayList<Thread>();
+        for (int i = 0; i < 10; i++) {
+            list.add(new Thread(test5::m, "t" + i));
+        }
+
+        //启动
+        list.forEach(o -> {
+            o.start();
+        });
+
+        for (int i = 0; i < 10; i++) {
+            //list的操作
+            list.forEach(o -> {
+                try {
+                    o.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        System.out.println("atomicInteger=" + test5.atomicInteger);
+    }
+}
+```
+
+他是调用 Unsafe这个类的对应方法实现的，Unsafe是一个单利模式的类，调用的是
+
+```java
+public final int incrementAndGet() {
+    return U.getAndAddInt(this, VALUE, 1) + 1;
+}
+```
+
+最后还是调用的compareAndSetInt方法
+
+```java
+public final native boolean compareAndSetInt(Object o, long offset,
+                                             int expected,
+                                             int x);
+```
+
+cas抽象出（v，Exp，NewValue）
+
+Exp达到对应的数值的时候，我门就可以进行改动当前的数值。
+
+## ABA问题
+
+出现的问题：121这种出现了。就是多线程修改了对应的数据出现的问题。
+
+修改aba问题请看
+
+https://blog.csdn.net/jingzi123456789/article/details/78004074
+
+
 
